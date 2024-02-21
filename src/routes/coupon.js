@@ -6,14 +6,14 @@ import {
   updateCoupon,
   deleteCoupon,
 } from "../controllers/couponController";
-import checkRole from "../middleware/checkRole";
+// import checkRole from "../middleware/checkRole";
 
 const router = Router();
 
-router.post("/createcoupon", checkRole(["admin"]), createCoupon);
-router.get("/getcoupons", checkRole(["admin"]), getCoupons);
-router.get("/getcoupon/:id", checkRole(["admin"]), getCouponById);
-router.put("/updatecoupon/:id", checkRole(["admin"]), updateCoupon);
-router.delete("/deletecoupon/:id", checkRole(["admin"]), deleteCoupon);
+router.post("/createcoupon", createCoupon);
+router.get("/getcoupons", getCoupons);
+router.get("/getcoupon/:id", getCouponById);
+router.put("/updatecoupon/:id", updateCoupon);
+router.delete("/deletecoupon/:id", deleteCoupon);
 
 export default router;
