@@ -30,7 +30,7 @@ async function createPayment(req, res) {
       success_url,
       back_url,
       notification_url:
-        "https://api-payment-gateway.vercel.app/api/payments/paymentnotifications",
+        "https://api-payment-gateway.vercel.app/api/dlocalgo/paymentnotifications",
     };
 
     const response = await axios.post(dLocalEndpointCreate, paymentData, {

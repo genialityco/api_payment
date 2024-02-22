@@ -8,7 +8,7 @@ const sesClient = new SESClient({
 
 async function sendEmail({ to, subject, htmlBody }) {
   const emailParams = {
-    Source: "lassojuanfe@gmail.com",
+    Source: "infra@geniality.com.co",
     Destination: { ToAddresses: [to] },
     Message: {
       Subject: { Data: subject },

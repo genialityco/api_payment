@@ -1,10 +1,10 @@
-import MembershipService from "../services/membership.service";
+import ItemToPayService from "../services/itemToPay.service.js";
 import sendResponse from "../utils/response.js";
 
-async function createMembership(req, res) {
+async function createItemToPay(req, res) {
   try {
     const paymentData = req.body.data;
-    const createdPayment = await MembershipService.createMembership(
+    const createdPayment = await ItemToPayService.createItemToPay(
       paymentData
     );
     sendResponse(res, 200, createdPayment);
@@ -14,9 +14,9 @@ async function createMembership(req, res) {
   }
 }
 
-async function getMemberships(req, res) {
+async function getItemsToPay(req, res) {
   try {
-    const payment = await MembershipService.getMemberships();
+    const payment = await ItemToPayService.getItemsToPay();
     sendResponse(res, 200, payment);
   } catch (error) {
     console.error(error);
@@ -24,4 +24,4 @@ async function getMemberships(req, res) {
   }
 }
 
-export { createMembership, getMemberships };
+export { createItemToPay, getItemsToPay };

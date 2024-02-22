@@ -4,7 +4,7 @@ import morgan from "morgan";
 import cors from "cors";
 import paymentsRoutes from "./routes/dlocalGo.js";
 import paymentDbRoutes from "./routes/paymentDb.js";
-import membershipRoutes from "./routes/membership.js";
+import itemToPayRoutes from "./routes/itemToPay.js";
 import couponRoutes from "./routes/coupon.js";
 import userRoutes from "./routes/user.js";
 
@@ -18,9 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use("/api/dlocalgo", paymentsRoutes);
-app.use("/api/paymentsdb", paymentDbRoutes);
-app.use("/api/memberships", membershipRoutes);
-app.use("/api/coupons", couponRoutes);
+app.use("/api/paymentdb", paymentDbRoutes);
+app.use("/api/item", itemToPayRoutes);
+app.use("/api/coupon", couponRoutes);
 app.use("/api/user", userRoutes);
 
 app.get("/", (req, res) => {
