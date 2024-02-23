@@ -19,6 +19,15 @@ class ItemToPayService {
       throw error;
     }
   }
+
+  async getItemToPayById(id) {
+    try {
+      const item = await ItemToPay.findOne({ _id: id });
+      return item;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new ItemToPayService();

@@ -4,9 +4,7 @@ import sendResponse from "../utils/response.js";
 async function createItemToPay(req, res) {
   try {
     const paymentData = req.body.data;
-    const createdPayment = await ItemToPayService.createItemToPay(
-      paymentData
-    );
+    const createdPayment = await ItemToPayService.createItemToPay(paymentData);
     sendResponse(res, 200, createdPayment);
   } catch (error) {
     console.error(error);
@@ -24,4 +22,15 @@ async function getItemsToPay(req, res) {
   }
 }
 
-export { createItemToPay, getItemsToPay };
+async function getItemToPayById(req, res) {
+  try {
+    const itemId = req.params.id;
+    const item = await ItemToPayService.getItemToPayById(itemId);
+    sendResponse(res, 200, item);
+  } catch (error) {
+    console.error(error);
+    sendResponse(res, 500, error);
+  }
+}
+
+export { createItemToPay, getItemsToPay, getItemToPayById };
