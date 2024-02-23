@@ -28,6 +28,26 @@ class ItemToPayService {
       throw error;
     }
   }
+
+  async updateItemToPay(id, data) {
+    try {
+      const updatedItem = await ItemToPay.findOneAndUpdate({ _id: id }, data, {
+        new: true,
+      });
+      return updatedItem;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteItem(id) {
+    try {
+      const item = await ItemToPay.findByIdAndDelete(id);
+      return item;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new ItemToPayService();

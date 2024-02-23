@@ -33,4 +33,30 @@ async function getItemToPayById(req, res) {
   }
 }
 
-export { createItemToPay, getItemsToPay, getItemToPayById };
+async function updateItemToPay(req, res) {
+  try {
+    const itemId = req.params.id;
+    const itemData = req.body.data;
+    const updatedItem = await ItemToPayService.updateItemToPay(
+      itemId,
+      itemData
+    );
+    sendResponse(res, 200, updatedItem);
+  } catch (error) {
+    console.error(error);
+    sendResponse(res, 500, error);
+  }
+}
+
+async function deleteItemToPay(req, res) {
+  try {
+    const itemId = req.params.id;
+    const deletedItem = await ItemToPayService.deleteItem(itemId);
+    sendResponse(res, 200, deletedItem);
+  } catch (error) {
+    console.error(error);
+    sendResponse(res, 500, error);
+  }
+}
+
+export { createItemToPay, getItemsToPay, getItemToPayById, updateItemToPay, deleteItemToPay };
