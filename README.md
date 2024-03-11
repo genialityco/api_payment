@@ -6,8 +6,8 @@ PORT=5050
 DB_URI=mongodb+srv://jfmosquera:0608@cluster0.nxpfanv.mongodb.net/pagos?retryWrites=true&w=majority
 
 # Variables de entorno para AWS - servicio de mensajería email
-AWS_ACCESS_KEY_ID=AKIA4JKF5YOP7J4YVYMR
-AWS_SECRET_ACCESS_KEY=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
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
 
 #Variables de entorno para Meta Developers - servicio de mensajería whatsapp
 WHATSAPP_ACCESS_TOKEN=EAAJafMSCrjcBOxqQ8bcxlyITWjchr9kKznD4YB4BZBMOO1EEsnOAlkBg09xvBzT1LZAq3Y8xCWHtN3MYZAH1xZBfF1v49YZAFAV7YDS2XaTRjYAi99W4FYl4XO8zZCYy1vnRgZBdZB7jkVRWKmhqgmcGu6MGMYmH9PYRpSRoUEorFoADMrnpZC6lfJcqTc8jiBj9iocvzN9oekkUcHcZCvqQUZD
