@@ -7,8 +7,7 @@ import { sendMessageSuccessPayment } from "../services/whatsapp.service.js";
 
 const axios = require("axios");
 
-const { DLOCALGO_KEY, DLOCALGO_KEY_SECRET } = process.env;
-const dLocalEndpointCreate = "https://api-sbx.dlocalgo.com/v1/payments";
+const { DLOCALGO_KEY, DLOCALGO_KEY_SECRET, DLOCALGO_ENDPOINT, NOTIFICATION_URL_API } = process.env;
 
 async function createPayment(req, res) {
   try {
@@ -30,10 +29,10 @@ async function createPayment(req, res) {
       success_url,
       back_url,
       notification_url:
-        "https://api-payment-gateway.vercel.app/api/dlocalgo/paymentnotifications",
+        `${NOTIFICATION_URL_API}`
     };
 
-    const response = await axios.post(dLocalEndpointCreate, paymentData, {
+    const response = await axios.post(DLOCALGO_ENDPOINT, paymentData, {
       headers: {
         Authorization: `Bearer ${DLOCALGO_KEY}:${DLOCALGO_KEY_SECRET}`,
         "Content-Type": "application/json",
@@ -50,7 +49,7 @@ async function createPayment(req, res) {
 async function getPayment(req, res) {
   try {
     const paymentId = req.params.id;
-    const response = await axios.get(`${dLocalEndpointCreate}/${paymentId}`, {
+    const response = await axios.get(`${DLOCALGO_ENDPOINT}/${paymentId}`, {
       headers: {
         Authorization: `Bearer ${DLOCALGO_KEY}:${DLOCALGO_KEY_SECRET}`,
         "Content-Type": "application/json",
@@ -67,7 +66,7 @@ async function getPayment(req, res) {
 async function paymentNotifications(req, res) {
   try {
     const { payment_id } = req.body;
-    const response = await axios.get(`${dLocalEndpointCreate}/${payment_id}`, {
+    const response = await axios.get(`${DLOCALGO_ENDPOINT}/${payment_id}`, {
       headers: {
         Authorization: `Bearer ${DLOCALGO_KEY}:${DLOCALGO_KEY_SECRET}`,
         "Content-Type": "application/json",
@@ -104,21 +103,21 @@ async function paymentNotifications(req, res) {
     }
 
     // Intento enviar el mensaje a WhatsApp
-    try {
-      const prefixFormated = paymentData.payer.prefix.replace(/\+/g, "");
-      const recipientId = prefixFormated + paymentData.payer.phone;
-      const templateName = "pago_exitoso_membresia";
-      const parameters = [
-        paymentData.payer.name,
-        paymentData.description,
-        paymentData.order_id,
-      ];
+    // try {
+    //   const prefixFormated = paymentData.payer.prefix.replace(/\+/g, "");
+    //   const recipientId = prefixFormated + paymentData.payer.phone;
+    //   const templateName = "pago_exitoso_membresia";
+    //   const parameters = [
+    //     paymentData.payer.name,
+    //     paymentData.description,
+    //     paymentData.order_id,
+    //   ];
 
-      await sendMessageSuccessPayment(recipientId, templateName, parameters);
-      console.log(`Mensaje de WhatsApp enviado exitosamente a ${recipientId}`);
-    } catch (whatsappError) {
-      console.error(`Error al enviar mensaje de WhatsApp a ${recipientId}:`, whatsappError);
-    }
+    //   await sendMessageSuccessPayment(recipientId, templateName, parameters);
+    //   console.log(`Mensaje de WhatsApp enviado exitosamente a ${recipientId}`);
+    // } catch (whatsappError) {
+    //   console.error(`Error al enviar mensaje de WhatsApp a ${recipientId}:`, whatsappError);
+    // }
 
     res.status(200).send("Notification received and email sent");
   } catch (error) {
