@@ -2,13 +2,13 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
 
 const sesClient = new SESClient({
-  region: "us-east-1",
+  region: "us-east-2",
   credentials: fromEnv(),
 });
 
 async function sendEmail({ to, subject, htmlBody }) {
   const emailParams = {
-    Source: "infra@geniality.com.co",
+    Source: process.env.AWS_EMAIL_IDENTITY,
     Destination: { ToAddresses: [to] },
     Message: {
       Subject: { Data: subject },
