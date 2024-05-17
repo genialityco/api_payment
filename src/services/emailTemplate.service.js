@@ -74,9 +74,10 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
       line-height: 1.6;
     }
     .qr-code {
-      text-align: center;
+      display: flex;
+      justify-content: center;
       margin-top: 20px;
-    }
+    }    
     .footer {
       background-color: #f0f0f0;
       padding: 15px;
@@ -89,7 +90,7 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://firebasestorage.googleapis.com/v0/b/magnetic-be10a.appspot.com/o/images%2FBanner%204mb.png?alt=media&token=5d332619-e0fc-4f9e-bcc1-2a6b977d11f6" alt="Criadero Yusapi Banner" class="logo">
+          <img src="https://firebasestorage.googleapis.com/v0/b/magnetic-be10a.appspot.com/o/images%2FBanner%204mb.png?alt=media&token=5d332619-e0fc-4f9e-bcc1-2a6b977d11f6" alt="Criadero Yusapi Banner" crossOrigin="anonymous" class="logo">
           <h2>Evento: Que día tan Padre</h2>
           <h3>Lugar: Criadero YUSAPI Vereda la trinidad  - Duitama</h3>
           <h3>Fecha: 9 de Junio  Horario: 1pm a 5pm</h3>
@@ -101,8 +102,8 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
           <p><strong>Monto:</strong> ${paymentData.amount} ${paymentData.currency}</p>
           <p><strong>Estado:</strong> ${status}</p>
           <p><strong>Fecha del pago:</strong> ${paymentData.approved_date}</p>
-          <div class="qr-code" align="center">
-            <img src="${qrCodeImage}" alt="Código QR" style="width:200px;height:200px;">
+          <div class="qr-code">
+            <img src="${qrCodeImage}" alt="Código QR" crossOrigin="anonymous" style="width:200px;height:200px; margin:auto">
             <p>Presenta este código QR en la entrada.</p>
           </div>
         </div>
