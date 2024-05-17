@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "supervisor start.js",
+    "build": "babel src --out-dir dist --copy-files",
+    "start": "node dist/app.js",
     "dev":"supervisor start.js",
     "prod":"node start.js"
   },
