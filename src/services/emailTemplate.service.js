@@ -1,4 +1,41 @@
+function translateStatus(status) {
+  const statusTranslations = {
+    PENDING: "PENDIENTE",
+    PAID: "PAGADO",
+    REJECTED: "RECHAZADO",
+    CANCELLED: "CANCELADO",
+    EXPIRED: "EXPIRADO",
+  };
+  return statusTranslations[status] || status;
+}
+
 function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
+  const status = translateStatus(paymentData.status);
+  let additionalMessage = "";
+
+  switch (paymentData.status) {
+    case "PAID":
+      additionalMessage =
+        "Tu pago ha sido procesado exitosamente. A continuación, encontrarás los detalles de tu pago y el código QR para ingresar al evento.";
+      break;
+    case "PENDING":
+      additionalMessage =
+        "Tu pago está actualmente pendiente. Te notificaremos una vez que se haya procesado.";
+      break;
+    case "REJECTED":
+      additionalMessage =
+        "Tu pago ha sido rechazado. Por favor, verifica tus datos y vuelve a intentarlo.";
+      break;
+    case "CANCELLED":
+      additionalMessage = "Tu pago ha sido cancelado.";
+      break;
+    case "EXPIRED":
+      additionalMessage = "Tu pago ha expirado.";
+      break;
+    default:
+      additionalMessage = "Por favor, verifica el estado de tu pago.";
+  }
+
   return `<html>
     <head>
     <style>
@@ -18,7 +55,7 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }
     .header {
-      background-color: #4CAF50;
+      background-color: #7cbcec;
       color: #ffffff;
       padding: 20px;
       text-align: center;
@@ -49,16 +86,16 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://i.ibb.co/kJck6F1/imagen-2024-05-16-173401118.png" alt="Criadero Yusapi Logo" class="logo">
+          <img src="https://firebasestorage.googleapis.com/v0/b/magnetic-be10a.appspot.com/o/images%2FBanner.png?alt=media&token=b477b334-4660-430c-8cbd-11befe8d7915" alt="Criadero Yusapi Logo" class="logo">
           <h2>Criadero Yusapi</h2>
-          <h4>Bienvenido al evento!</h4>
+          <h4>¡Bienvenido al evento!</h4>
         </div>
         <div class="content">
           <p>Estimado ${paymentData.payer.name},</p>
-          <p>Tu pago ha sido procesado exitosamente. A continuación, encontrarás los detalles de tu pago y el código QR para ingresar al evento.</p>
+          <p>${additionalMessage}</p>
           <p><strong>Referencia de pago:</strong> ${paymentData.order_id}</p>
           <p><strong>Monto:</strong> ${paymentData.amount} ${paymentData.currency}</p>
-          <p><strong>Estado:</strong> ${paymentData.status}</p>
+          <p><strong>Estado:</strong> ${status}</p>
           <p><strong>Fecha del pago:</strong> ${paymentData.approved_date}</p>
           <div class="qr-code">
             <img src="${qrCodeImage}" alt="Código QR" style="width:200px;height:200px;">
@@ -66,7 +103,7 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
           </div>
         </div>
         <div class="footer">
-          <p>Gracias por tu compra!</p>
+          <p>¡Gracias por tu compra!</p>
         </div>
       </div>
     </body>

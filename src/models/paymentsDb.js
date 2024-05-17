@@ -10,7 +10,7 @@ const PaymentSchema = new mongoose.Schema({
   payer: {
     name: { type: String, required: true },
     document: { type: String, required: true },
-    profession: { type: String, required: true },
+    // profession: { type: String, required: true },
     email: { type: String, required: true },
     prefix: { type: String, required: true },
     phone: { type: String, required: true },
