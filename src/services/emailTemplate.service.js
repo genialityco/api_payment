@@ -75,6 +75,7 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
     }
     .qr-code {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       margin-top: 20px;
     }    
