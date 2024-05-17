@@ -77,6 +77,7 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      text-align: center;
       margin-top: 20px;
     }    
     .footer {
