@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
-
-const qrCodeSchema = new mongoose.Schema({
+//renombrar base de datos esta será la boleta como tal
+const ticketSchema = new mongoose.Schema({
   paymentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Payment",
     required: true,
   },
-  token: { type: String, required: true, unique: true },
   eventEntryUsed: { type: Boolean, default: false },
   foodRedemptionUsed: { type: Boolean, default: false },
 });
 
-const QRCode = mongoose.model("QRCode", qrCodeSchema);
+const ticket = mongoose.model("ticket", ticketSchema);
 
-module.exports = QRCode;
+module.exports = ticket;

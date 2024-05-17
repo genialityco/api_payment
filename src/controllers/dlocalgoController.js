@@ -4,10 +4,10 @@ import CouponService from "../services/coupon.service";
 import { generatePaymentEmailTemplate } from "../services/emailTemplate.service.js";
 import { sendEmail } from "../services/email.service.js";
 import { sendMessageSuccessPayment } from "../services/whatsapp.service.js";
-import { QRCodeService } from "../services/qrcode.service.js";
+import { createTicket } from "../services/ticket.service.js";
 
 const axios = require("axios");
-const generateQRCode = require("../utils/generateQRCode.js").default;
+const generateQRCode = require("../utils/generateQRCode.js");
 
 const {
   DLOCALGO_KEY,
@@ -101,23 +101,33 @@ async function paymentNotifications(req, res) {
 
     // Intento enviar el correo
     if (paymentData.status === "PAID") {
+      const ticketCreated = await createTicket({
+        paymentId: paymentData._id,
+      });
+
+      // guardar el ID de la boleta actualmente modelo QRCode añadir, nombre y telefono, fecha de generación de la boleta, referencia del pago dlocalgo
       const qrData = {
-        token: paymentData.order_id, // Un token único por usuario
-        uses: {
-          entry: false, // Inicialmente no usado para entrada
-          food: false, // Inicialmente no usado para comida
-        },
+        _id: ticketCreated._id,
+        name: paymentData.payer.name,
+        phone: paymentData.payer.phone,
+        generationDate: new Date().toISOString(),
+        order_id: paymentData.order_id,
       };
-      const qrCodeImage = await generateQRCode(qrData);
+
+      const qrCodeImage = await generateQRCode(
+        qrData,
+        `QR-${paymentData.payment_id}`
+      );
 
       const htmlBody = generatePaymentEmailTemplate(paymentData, qrCodeImage);
 
       try {
         await sendEmail({
           to: paymentData.payer.email,
-          subject: "Entrada para el evento",
+          subject: "Entrada para el evento QUE DÍA TAN PADRE - Criadero YUSAPI",
           htmlBody,
         });
+
         console.log(`Correo enviado exitosamente a ${paymentData.payer.email}`);
       } catch (emailError) {
         console.error(

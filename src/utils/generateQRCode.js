@@ -1,28 +1,49 @@
-import { toDataURL } from 'qrcode';
+const { storage } = require("../../firebase-config.js"); // Ajusta la ruta según sea necesario
+const { toDataURL } = require("qrcode");
 
 /**
- * Genera un código QR como Data URI. Acepta tanto cadenas de texto como objetos.
- * @param {string|object} data Los datos que se convertirán en QR, pueden ser una cadena de texto o un objeto.
- * @returns {Promise<string>} Una promesa que resuelve con el Data URI del código QR.
+ * Genera un código QR y lo sube a Firebase Storage.
+ * @param {string|object} data Los datos para el código QR.
+ * @param {string} fileName Nombre del archivo para el QR.
+ * @returns {Promise<string>} URL pública del archivo en Firebase Storage.
  */
-async function generateQRCode(data) {
+async function generateQRCode(data, fileName) {
   try {
-    // Opciones adicionales podrían incluirse aquí, como error correction level
     const options = {
-      errorCorrectionLevel: 'H', // Niveles: L, M, Q, H
-      type: 'image/png',
+      errorCorrectionLevel: "H",
+      type: "image/png",
       quality: 0.92,
-      margin: 1
+      margin: 1,
     };
-    // Verificar si los datos son un objeto y convertir a cadena JSON
-    const dataForQR = (typeof data === 'object') ? JSON.stringify(data) : data;
-    // Convertir datos a Data URI (base64)
+    const dataForQR = typeof data === "object" ? JSON.stringify(data) : data;
     const qrImage = await toDataURL(dataForQR, options);
-    return qrImage;
+
+    const buffer = Buffer.from(qrImage.split(",")[1], "base64");
+    const file = storage.bucket().file(`QR/${fileName}.png`);
+
+    await file.save(buffer, {
+      metadata: {
+        contentType: "image/png",
+      },
+      public: true,
+      validation: "md5",
+    });
+
+    // Retorna la URL pública
+    return getPublicUrl(`QR/${fileName}.png`);
   } catch (err) {
-    console.error('Error al generar el código QR:', err);
-    throw err;  // Propaga el error para manejo externo
+    console.error("Error generating or uploading QR code:", err);
+    throw err;
   }
 }
 
-export default generateQRCode;
+/**
+ * Obtiene la URL pública de un archivo en Firebase Storage.
+ * @param {string} filePath Path del archivo en el bucket.
+ * @returns {string} URL pública del archivo.
+ */
+function getPublicUrl(filePath) {
+  return `https://storage.googleapis.com/${storage.bucket().name}/${filePath}`;
+}
+
+module.exports = generateQRCode;
