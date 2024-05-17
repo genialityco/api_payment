@@ -5,6 +5,7 @@ import { generatePaymentEmailTemplate } from "../services/emailTemplate.service.
 import { sendEmail } from "../services/email.service.js";
 import { sendMessageSuccessPayment } from "../services/whatsapp.service.js";
 import { createTicket } from "../services/ticket.service.js";
+import paymentDbService from "../services/paymentDb.service";
 
 const axios = require("axios");
 const generateQRCode = require("../utils/generateQRCode.js");
@@ -120,6 +121,10 @@ async function paymentNotifications(req, res) {
       );
 
       const htmlBody = generatePaymentEmailTemplate(paymentData, qrCodeImage);
+
+      await paymentDbService.updatePayment(paymentData.payment_id, {
+        ticketGenerated: htmlBody,
+      });
 
       try {
         await sendEmail({

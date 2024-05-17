@@ -16,10 +16,11 @@ const PaymentSchema = new mongoose.Schema({
     phone: { type: String, required: true },
   },
   description: { type: String, required: true },
-  uidAnonymous: { type: String, required: true},
+  uidAnonymous: { type: String, required: true },
   redirect_url: { type: String, required: true },
   approved_date: { type: Date },
-  coupon: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon"},
+  coupon: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon" },
+  ticketGenerated: { type: String },
   create_at: { type: Date, default: Date.now },
   update_at: { type: Date, default: Date.now },
 });
