@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon start.js"
+    "start": "nodemon start.js",
+    "dev":"supervisor start.js",
+    "prod":"node start.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,8 @@
     "mongoose": "^8.1.1",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.3",
+    "qrcode": "^1.5.3",
+    "supervisor": "^0.12.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

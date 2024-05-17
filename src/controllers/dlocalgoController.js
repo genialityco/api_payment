@@ -4,10 +4,17 @@ import CouponService from "../services/coupon.service";
 import { generatePaymentEmailTemplate } from "../services/emailTemplate.service.js";
 import { sendEmail } from "../services/email.service.js";
 import { sendMessageSuccessPayment } from "../services/whatsapp.service.js";
+import { QRCodeService } from "../services/qrcode.service.js";
 
 const axios = require("axios");
+const generateQRCode = require("../utils/generateQRCode.js").default;
 
-const { DLOCALGO_KEY, DLOCALGO_KEY_SECRET, DLOCALGO_ENDPOINT, NOTIFICATION_URL_API } = process.env;
+const {
+  DLOCALGO_KEY,
+  DLOCALGO_KEY_SECRET,
+  DLOCALGO_ENDPOINT,
+  NOTIFICATION_URL_API,
+} = process.env;
 
 async function createPayment(req, res) {
   try {
@@ -28,8 +35,7 @@ async function createPayment(req, res) {
       description,
       success_url,
       back_url,
-      notification_url:
-        `${NOTIFICATION_URL_API}`
+      notification_url: `${NOTIFICATION_URL_API}`,
     };
 
     const response = await axios.post(DLOCALGO_ENDPOINT, paymentData, {
@@ -66,19 +72,24 @@ async function getPayment(req, res) {
 async function paymentNotifications(req, res) {
   try {
     const { payment_id } = req.body;
+
     const response = await axios.get(`${DLOCALGO_ENDPOINT}/${payment_id}`, {
       headers: {
         Authorization: `Bearer ${DLOCALGO_KEY}:${DLOCALGO_KEY_SECRET}`,
         "Content-Type": "application/json",
       },
     });
+
     const paymentUpdate = {
       status: response.data.status,
       redirect_url: response.data.redirect_url,
       approved_date: response.data.approved_date,
     };
 
-    const paymentData = await PaymentDbService.updatePayment(payment_id, paymentUpdate);
+    const paymentData = await PaymentDbService.updatePayment(
+      payment_id,
+      paymentUpdate
+    );
 
     if (paymentData.status === "PAID" && paymentData.coupon !== null) {
       const coupon = await CouponService.getCouponById(paymentData.coupon);
@@ -88,36 +99,33 @@ async function paymentNotifications(req, res) {
       await CouponService.updateCoupon(coupon._id, updatedCoupon);
     }
 
-    const htmlBody = generatePaymentEmailTemplate(paymentData);
-
     // Intento enviar el correo
-    try {
-      await sendEmail({
-        to: paymentData.payer.email,
-        subject: "Pago de membresía",
-        htmlBody,
-      });
-      console.log(`Correo enviado exitosamente a ${paymentData.payer.email}`);
-    } catch (emailError) {
-      console.error(`Error al enviar correo a ${paymentData.payer.email}:`, emailError);
+    if (paymentData.status === "PAID") {
+      const qrData = {
+        token: paymentData.order_id, // Un token único por usuario
+        uses: {
+          entry: false, // Inicialmente no usado para entrada
+          food: false, // Inicialmente no usado para comida
+        },
+      };
+      const qrCodeImage = await generateQRCode(qrData);
+
+      const htmlBody = generatePaymentEmailTemplate(paymentData, qrCodeImage);
+
+      try {
+        await sendEmail({
+          to: paymentData.payer.email,
+          subject: "Entrada para el evento",
+          htmlBody,
+        });
+        console.log(`Correo enviado exitosamente a ${paymentData.payer.email}`);
+      } catch (emailError) {
+        console.error(
+          `Error al enviar correo a ${paymentData.payer.email}:`,
+          emailError
+        );
+      }
     }
-
-    // Intento enviar el mensaje a WhatsApp
-    // try {
-    //   const prefixFormated = paymentData.payer.prefix.replace(/\+/g, "");
-    //   const recipientId = prefixFormated + paymentData.payer.phone;
-    //   const templateName = "pago_exitoso_membresia";
-    //   const parameters = [
-    //     paymentData.payer.name,
-    //     paymentData.description,
-    //     paymentData.order_id,
-    //   ];
-
-    //   await sendMessageSuccessPayment(recipientId, templateName, parameters);
-    //   console.log(`Mensaje de WhatsApp enviado exitosamente a ${recipientId}`);
-    // } catch (whatsappError) {
-    //   console.error(`Error al enviar mensaje de WhatsApp a ${recipientId}:`, whatsappError);
-    // }
 
     res.status(200).send("Notification received and email sent");
   } catch (error) {
@@ -128,3 +136,19 @@ async function paymentNotifications(req, res) {
 
 export { createPayment, getPayment, paymentNotifications };
 
+// Intento enviar el mensaje a WhatsApp
+// try {
+//   const prefixFormated = paymentData.payer.prefix.replace(/\+/g, "");
+//   const recipientId = prefixFormated + paymentData.payer.phone;
+//   const templateName = "pago_exitoso_membresia";
+//   const parameters = [
+//     paymentData.payer.name,
+//     paymentData.description,
+//     paymentData.order_id,
+//   ];
+
+//   await sendMessageSuccessPayment(recipientId, templateName, parameters);
+//   console.log(`Mensaje de WhatsApp enviado exitosamente a ${recipientId}`);
+// } catch (whatsappError) {
+//   console.error(`Error al enviar mensaje de WhatsApp a ${recipientId}:`, whatsappError);
+// }

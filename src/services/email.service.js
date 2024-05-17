@@ -2,7 +2,7 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
 
 const sesClient = new SESClient({
-  region: "us-east-2",
+  region: "us-east-1",
   credentials: fromEnv(),
 });
 
