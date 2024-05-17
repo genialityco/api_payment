@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon start.js",
+    "start": "supervisor start.js",
     "dev":"supervisor start.js",
     "prod":"node start.js"
   },
