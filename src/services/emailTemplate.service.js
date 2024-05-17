@@ -101,7 +101,7 @@ function generatePaymentEmailTemplate(paymentData, qrCodeImage) {
           <p><strong>Monto:</strong> ${paymentData.amount} ${paymentData.currency}</p>
           <p><strong>Estado:</strong> ${status}</p>
           <p><strong>Fecha del pago:</strong> ${paymentData.approved_date}</p>
-          <div class="qr-code">
+          <div class="qr-code" align="center">
             <img src="${qrCodeImage}" alt="Código QR" style="width:200px;height:200px;">
             <p>Presenta este código QR en la entrada.</p>
           </div>
