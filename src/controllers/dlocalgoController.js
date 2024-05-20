@@ -124,6 +124,7 @@ async function paymentNotifications(req, res) {
 
       await paymentDbService.updatePayment(paymentData.payment_id, {
         ticketGenerated: htmlBody,
+        limit: paymentData.limit + 1,
       });
 
       try {

@@ -5,6 +5,8 @@ const itemToPaySchema = new mongoose.Schema({
   price: { type: Number, required: true },
   currency: {type: String, required: true},
   active: { type: Boolean, default: true },
+  limit: { type: Number, required: true },
+  purchased: {type: Number, required: false},
   create_at: { type: Date, default: Date.now },
   update_at: { type: Date, default: Date.now },
 });
